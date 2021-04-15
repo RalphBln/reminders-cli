@@ -11,7 +11,8 @@ private func formattedDueDate(from reminder: EKReminder) -> String? {
 
 private func format(_ reminder: EKReminder, at index: Int) -> String {
     let dateString = formattedDueDate(from: reminder).map { " (\($0))" } ?? ""
-    return "\(index): \(reminder.title ?? "<unknown>")\(dateString)"
+    
+    return "\(index): \(reminder.title ?? "<unknown>")\(dateString) \(reminder.url!.absoluteString)"
 }
 
 public final class Reminders {
@@ -74,12 +75,15 @@ public final class Reminders {
         semaphore.wait()
     }
 
-    func addReminder(string: String, toListNamed name: String, dueDate: DateComponents?) {
+    func addReminder(string: String, toListNamed name: String, dueDate: DateComponents?, notes: String?, url: String?) {
         let calendar = self.calendar(withName: name)
         let reminder = EKReminder(eventStore: Store)
         reminder.calendar = calendar
         reminder.title = string
         reminder.dueDateComponents = dueDate
+        reminder.url = URL(string: "http://example.org")
+        reminder.notes = notes
+        reminder.setValue(URL(string: url!), forKey: "action")
 
         do {
             try Store.save(reminder, commit: true)
