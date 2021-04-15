@@ -81,9 +81,11 @@ public final class Reminders {
         reminder.calendar = calendar
         reminder.title = string
         reminder.dueDateComponents = dueDate
-        reminder.url = URL(string: "http://example.org")
         reminder.notes = notes
-        reminder.setValue(URL(string: url!), forKey: "action")
+        
+        if (url != nil) {
+            reminder.setValue(URL(string: url!), forKey: "action")
+        }
 
         do {
             try Store.save(reminder, commit: true)
